@@ -5,13 +5,16 @@ import { Input } from "@/components/ui/input";
 import { loginAction } from "../_action/authAction";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
+// import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const [state, action, pedding] = useActionState(loginAction, false);
+  // const router = useRouter()
   useEffect(() => {
     if (!state) return;
     if (state.success) {
       toast.success(state.message || "Login successful");
+      // router.push("/dashboard")
     }
     if (!state.success) {
       toast.error(state.message || "Login Faild");

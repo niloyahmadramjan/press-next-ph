@@ -1,4 +1,6 @@
 "use server";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 type LoginState = {
   success: boolean;
@@ -9,11 +11,13 @@ type LoginState = {
     refreshToken: string;
   };
 };
-export const loginAction = async (prevState : LoginState, formData: FormData) => {
+export const loginAction = async (
+  prevState: LoginState,
+  formData: FormData,
+) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-//   console.log(prevState)
-
+  //   console.log(prevState)
 
   const res = await fetch(`${process.env.BACKEND_URL}/api/auth/login`, {
     method: "POST",
@@ -23,6 +27,69 @@ export const loginAction = async (prevState : LoginState, formData: FormData) =>
     body: JSON.stringify({ email, password }),
   });
   const result = await res.json();
-  console.log(result);
+  if (result.success) {
+    const cookieStore = await cookies();
+    cookieStore.set("accessToken", result.data.accessToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24,
+      sameSite: "lax",
+    });
+    cookieStore.set("refreshToken", result.data.refreshToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: "lax",
+    });
+    redirect("/dashboard", "replace");
+  }
+
+  return result;
+};
+
+
+type RegisterState = {
+  success: boolean;
+  statasCode: number;
+  massage: string;
+  data: {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      activeStatus: string;
+      role: string;
+      createdAt: string;
+      updatedAt: string;
+      profile: {
+        id: string;
+        profilePhoto: string;
+        bio: string | null;
+        userId: string;
+        createdAt: string;
+        updatedAt: string;
+      };
+    };
+  };
+};  
+
+
+export const registerAction = async (
+  prevState: RegisterState,
+  formData: FormData,
+) => {
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const profilePhoto = formData.get("profilePhoto") as string;
+  const password = formData.get("password") as string;
+  //   console.log(prevState)
+
+  const res = await fetch(`${process.env.BACKEND_URL}/api/users/register`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ name, email, profilePhoto, password }),
+  });
+  const result = await res.json();
+
   return result;
 };

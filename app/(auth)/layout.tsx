@@ -1,7 +1,16 @@
-import React from "react";
 
-const DashboardLahyout = ({ children }: { children: React.ReactNode }) => {
-  return <>{children}</>;
+import { getMe } from "@/service/getMe";
+import { Navbar } from "../_components/navbar/Navbar";
+
+const AuthGroupLayout = async (
+    { children }: { children: React.ReactNode }) => {
+
+         const user = await getMe();
+  return <div>
+    <Navbar user={user}/>
+    {children}
+  
+  </div>;
 };
 
-export default DashboardLahyout;
+export default AuthGroupLayout;
