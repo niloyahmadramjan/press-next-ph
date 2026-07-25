@@ -46,7 +46,10 @@ export async function proxy(request: NextRequest) {
   }
 
   let userRole = null;
-
+  if (!decodedAccessToken?.success) {
+    //token has expired or is invalid, clear the cookies
+    cookieStore.delete("accessToken");
+  }
   if (decodedAccessToken?.success && decodedAccessToken.data) {
     userRole = (decodedAccessToken.data as JwtPayload).role;
   }
@@ -63,11 +66,31 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  const isPublicRoute = PUBLIC_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/"),
+  );
+
+  const isAuthRoute = AUTH_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/"),
+  );
+
+  if (!accessToken && !isPublicRoute && !isAuthRoute) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  if (pathname.startsWith("/dashboard") && userRole !== "USER") {
+    return NextResponse.redirect(new URL("/login", request.url));
+  } else if (pathname.startsWith("/admin-dashboard") && userRole !== "ADMIN") {
+    return NextResponse.redirect(new URL("/not-found", request.url));
+  } else if (
+    pathname.startsWith("/author-dashboard") &&
+    userRole !== "AUTHOR"
+  ) {
+    return NextResponse.redirect(new URL("/not-found", request.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-    matcher: [
-        '/((?!api|_next/static|favicon.ico|_next/image|.*\\.png$).*)'
-    ],
-}
+  matcher: ["/((?!api|_next/static|favicon.ico|_next/image|.*\\.png$).*)"],
+};
