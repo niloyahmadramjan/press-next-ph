@@ -20,7 +20,7 @@ export const loginAction = async (
   const password = formData.get("password") as string;
   //   console.log(prevState)
 
-  const res = await fetch(`${process.env.BACKEND_URL}/api/auth/login`, {
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login`, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -51,7 +51,7 @@ export const loginAction = async (
   } else if (decodedToken.role === "AUTHOR") {
     redirect("/author-dashboard");
   }
-  return result ;
+  return result;
 };
 
 type RegisterState = {
@@ -89,7 +89,7 @@ export const registerAction = async (
   const password = formData.get("password") as string;
   //   console.log(prevState)
 
-  const res = await fetch(`${process.env.BACKEND_URL}/api/users/register`, {
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/users/register`, {
     method: "POST",
     headers: {
       "content-type": "application/json",

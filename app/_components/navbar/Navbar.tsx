@@ -33,17 +33,18 @@ import { toast } from "sonner";
 // Keep nav items organized in an array for easy maintenance
 const navItems = [
   { title: "Home", href: "/", icon: Home },
-  { title: "Explore", href: "/explore", icon: Compass },
-  { title: "Notifications", href: "/notifications", icon: Bell },
-  { title: "Messages", href: "/messages", icon: MessageCircle },
+  { title: "About", href: "/about", icon: Compass },
+  { title: "Services", href: "/services", icon: Bell },
+  { title: "Contact", href: "/contact", icon: MessageCircle },
+  { title: "News", href: "/news", icon: MessageCircle },
+  { title: "Premium", href: "/premium", icon: MessageCircle },
 ];
 
 // User dropdown options organized in an array as well
 const userMenuItems = [
-  { title: "Profile", href: "/profile", icon: User },
-  { title: "Saved", href: "/saved", icon: Bookmark },
+  { title: "Dashboard", href: "/", icon: User },
+  { title: "Profile", href: "/profile", icon: Bookmark },
   { title: "Settings", href: "/settings", icon: Settings },
-  { title: "Support", href: "/support", icon: LifeBuoy },
 ];
 
 type IUser = {

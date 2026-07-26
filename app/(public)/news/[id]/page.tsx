@@ -1,9 +1,7 @@
-import React from 'react'
 
-function newsByIdPage() {
-  return (
-    <div>newsByIdPage</div>
-  )
-}
+const NewsByIdPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+  return <div>NewsByIdPage {id}</div>;
+};
 
-export default newsByIdPage
+export default NewsByIdPage

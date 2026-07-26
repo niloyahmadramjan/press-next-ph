@@ -12,7 +12,7 @@ export const getMe = async () => {
       message: "Your are not logged!",
     };
   }
-  const res = await fetch(`${process.env.BACKEND_URL}/api/users/me`, {
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/users/me`, {
     headers: {
       // Authorization: accessToken as unknown as string
       Authorization: `${accessToken}`,
