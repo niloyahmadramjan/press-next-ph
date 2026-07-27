@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtUtils } from "./utils/jwt";
 import { getNewAccessToken } from "./service/refreshToken";
 import { JwtPayload } from "jsonwebtoken";
+import getSubscriptionStatus from "./app/(public)/_actions/getSubscriptionStatus";
 
 const AUTH_ROUTES = ["/login", "/register"];
 const PUBLIC_ROUTES = ["/", "/news"];
@@ -86,6 +87,18 @@ export async function proxy(request: NextRequest) {
     userRole !== "AUTHOR"
   ) {
     return NextResponse.redirect(new URL("/not-found", request.url));
+  }
+
+  if (pathname === "/premium") {
+    const subscriptionStatus = await getSubscriptionStatus();
+
+    const isActive = Boolean(
+      subscriptionStatus?.success && subscriptionStatus.data?.isSubscribed,
+    );
+
+    if (!isActive) {
+      return NextResponse.redirect(new URL("/payment", request.url));
+    }
   }
 
   return NextResponse.next();
